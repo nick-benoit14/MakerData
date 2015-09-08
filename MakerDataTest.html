@@ -1,0 +1,71 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>D3 Test</title>
+        <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+        <script type="text/javascript" src="MakerData.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+        <style> html,body{height:100%;}</style>
+
+    </head>
+    <body>
+        <script type="text/javascript">
+
+        var svg = d3.select("body").append("svg")
+            .attr('width', '100%')
+                .attr('height', '100%');
+        var width = $("svg").width();
+        var height = $("svg").width();
+
+
+
+        var update = function(data){
+
+
+          //add slope line support
+
+
+
+
+
+              var circle = svg.selectAll("circle")
+              .data(data);
+
+              circle.exit().remove();
+
+              console.log($("svg").width() / data.length);
+
+              circle.enter().append("circle")
+                  .attr("cy", function(d){ return d;}) //return d.y * constant;)
+                  .attr("r", function(d){return 5;})
+                  .attr("cx", function(d,i){return ($("svg").width() / data.length) * i + (($("svg").width() / data.length) / 2);})
+                  .attr("fill", function(d){return '#59B33C';});
+
+
+              circle.transition()
+              .attr("cy", function(d){return d;})
+              .attr("cx", function(d,i){return ($("svg").width() / data.length) * i + (($("svg").width() / data.length) / 2);});
+
+              }
+
+
+
+            var controller = new Controller(testData);
+            //update(controller.getData(3, $("svg").width(), $("svg").height()));
+            var i = 0;
+            setInterval(function(){
+              controller.addData([{"Temperature":0.00, "Pressure":50.00, "Humidity":i*10}]);
+              update(controller.getData(3, $("svg").width(), $("svg").height()));
+              i++;}
+              , 2000);
+
+
+
+
+
+        </script>
+    </body>
+</html>
