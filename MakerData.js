@@ -1,12 +1,17 @@
 //Take JSON data produced by weather station and display using D3
 
 
+//develop Stream Data
+//add Numeric Markers
+
+
+
 var testData = [
   {"Temperature":0.00, "Pressure":50.00, "Humidity":10},
   {"Temperature":0.00, "Pressure":50.00, "Humidity":20},
   {"Temperature":0.00, "Pressure":50.00, "Humidity":30},
-  {"Temperature":0.00, "Pressure":50.00, "Humidity":40}
-  /*{"Temperature":0.00, "Pressure":50.00, "Humidity":50},
+  {"Temperature":0.00, "Pressure":50.00, "Humidity":40},
+  {"Temperature":0.00, "Pressure":50.00, "Humidity":50},
   {"Temperature":0.00, "Pressure":50.00, "Humidity":60},
   {"Temperature":0.00, "Pressure":50.00, "Humidity":60},
   {"Temperature":0.00, "Pressure":50.00, "Humidity":50},
@@ -26,12 +31,14 @@ var testData = [
   {"Temperature":0.00, "Pressure":50.00, "Humidity":40},
   {"Temperature":0.00, "Pressure":50.00, "Humidity":30},
   {"Temperature":0.00, "Pressure":50.00, "Humidity":20},
-  {"Temperature":0.00, "Pressure":50.00, "Humidity":10}*/
+  {"Temperature":0.00, "Pressure":50.00, "Humidity":10}
 
 ];
 
 function Controller(Data){
 
+
+    var PointArr = [];
     var Databank = [];
         Databank[0] = [];
 //Read data
@@ -122,46 +129,67 @@ function Controller(Data){
             Databank[0][3][1] = min;
     }
 
+/*
+  ViewMode -
+        0 - fit all data to view port
+        1 - view only most recent 10 data points
 
-  this.getSlope = function(PointA, PointB){
-      if(PointA.PointFlag && PointB.PointFlag){
-              var Y = PointB.getY()-PointA.getY();
-              var X = PointB.getX()-PointA.getX();
-              var slope = Infinity;
-            if(X != 0) slope = Y/X;
+*/
+  this.Data = function(viewMode,index, X_View, Y_View)
+    {
+      //init data function that calculates range and stores data
+      //if Range != Range then recalculate range
+            //reformat data
 
-            return slope;
-          }
-      else{console.log("Cannot Calculate Slope of Non-Point Object \n");}}
+        PointArr = [];
+        var tolerance = 100;
+        X_View -= tolerance;
+        Y_View -= tolerance;
 
-  this.getData = function(index, X, Y){
-    var PointArr = []; //Pointer to Selected Data Type
-
-    var R = 5;
-    X -= R;
-    Y -= R;
-    //Format Data from raw data to fit on screen
-    var range_1 = Databank[0][index][0] - Databank[0][index][1];
-    //console.log("Range: " + range);
-
-
-    if(index > Object.keys(Data[0]).length){
-        console.log("getData: Index Out Of Bounds! \n");
-        return;}
-    else{
-
-       for(var i = 0; i < Databank[index].length; i++){
-         //set appropriate range
-         var range = ((Databank[index][i] * Y) / range_1)- (2*R);
-         console.log("Range: " + range);
-
-         PointArr.push(range);
-       }
-
-        return PointArr;
-    }}
+        var dataLength = Databank[index].length;
+        var dataRange = 0;
+        var R = 5;
 
 
+        if(viewMode == 0) /*fit all data to screen*/
+          {
+               //dataRange = Databank[0][index][0] - Databank[0][index][1]; //Max - Min
+               var min = Databank[0][index][1];
+               var max = Databank[0][index][0];
+               dataRange = max - min;
 
+                 for(var i = 0; i < dataLength; i++)
+                       {
+                           //var val_Y = (((Databank[index][i] - min) * Y_View) / (dataRange - min)) + (tolerance / 2); // + ((Y_View / dataRange) / 2);// - ((Y_View / dataRange)/2);// + (2*R);
+                           var val_Y = (((Databank[index][i] - min) * Y_View) / dataRange) + (tolerance / 2); // + ((Y_View / dataRange) / 2);// - ((Y_View / dataRange)/2);// + (2*R);
 
+                           var val_X = ((X_View / dataLength) * i) + ((X_View / dataLength)/2);
+                           PointArr.push({"X":val_X, "Y":val_Y});
+                       }
+                  return PointArr;
+        }
+
+      if(viewMode == 1) /*fit last 10 data points to screen*/
+        {
+               var plotLength = dataLength - 10;
+               var max = Databank[index][plotLength];
+               var min = Databank[index][plotLength];
+               for(var i = plotLength + 1; i < dataLength; i++)
+                  {
+                    if(Databank[index][i] > max) max = Databank[index][i];
+                    if(Databank[index][i] < min) min = Databank[index][i];
+                  }
+               var dataRange = max - min;
+
+               for(var i = plotLength, j = 0; i < dataLength; i++, j++)
+                  {
+                    //var val_Y = (((Databank[index][i] - min) * Y_View) / (dataRange - min)) + (tolerance / 2); // + ((Y_View / dataRange) / 2);// - ((Y_View / dataRange)/2);// + (2*R);
+                    var val_Y = (((Databank[index][i] - min) * Y_View) / dataRange) + (tolerance / 2); // + ((Y_View / dataRange) / 2);// - ((Y_View / dataRange)/2);// + (2*R);
+                    var val_X = ((X_View / 10) * j) + ((X_View / 20) + (tolerance / 2));
+                    PointArr.push({"X":val_X, "Y":val_Y});
+                  }
+
+                return PointArr;
+      }
+  }
 }

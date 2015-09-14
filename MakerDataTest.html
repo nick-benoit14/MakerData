@@ -20,45 +20,124 @@
         var width = $("svg").width();
         var height = $("svg").width();
 
+        var dataObject = {
 
+          previous_X:'$',
+          previous_Y:'$'
+        };
 
         var update = function(data){
 
 
           //add slope line support
 
-
-
-
-
               var circle = svg.selectAll("circle")
               .data(data);
 
+              //<line x1="5" y1="5" x2="40" y2="40" stroke="gray" stroke-width="5"
+
+
+
               circle.exit().remove();
 
-              console.log($("svg").width() / data.length);
-
               circle.enter().append("circle")
-                  .attr("cy", function(d){ return d;}) //return d.y * constant;)
+                  .attr("cy", function(d){return d.Y;}) //return d.y * constant;)
                   .attr("r", function(d){return 5;})
-                  .attr("cx", function(d,i){return ($("svg").width() / data.length) * i + (($("svg").width() / data.length) / 2);})
-                  .attr("fill", function(d){return '#59B33C';});
+                  .attr("cx", function(d){return d.X;})
+                  .attr("fill", function(d, i){return '#59B33C';});
+
+
 
 
               circle.transition()
-              .attr("cy", function(d){return d;})
-              .attr("cx", function(d,i){return ($("svg").width() / data.length) * i + (($("svg").width() / data.length) / 2);});
+              .attr("cy", function(d){return d.Y;})
+              .attr("cx", function(d){return d.X;});
 
-              }
+/*
+      var line = svg.selectAll("line")
+              .data(data);
+          line.exit().remove();
+
+          line.enter().append("line")
+              .attr("x1", function(d,i)
+                {
+                  if(i < 1){return 0;}
+                  else{return circle[0][i-1].cx.baseVal.valueInSpecifiedUnits;}
+                })
+              .attr("y1", function(d,i)
+                {
+                  if(i < 1){return 0;}
+                  else{return circle[0][i-1].cy.baseVal.valueInSpecifiedUnits;}
+                })
+              .attr("x2", function(d,i)
+                {
+                  if(i < 1){return 0;}
+                  else{return ($("svg").width() / data.length) * i + (($("svg").width() / data.length) / 2);}
+                })
+              .attr("y2", function(d,i)
+                {
+                  if(i < 1){return 0;}
+                  else{return d;}
+                })
+              .attr("stroke", function(d,i)
+                {
+                  if(i < 1){return 0;}
+                  else{return '#59B33C';}
+                })
+              .attr("stroke-width", function(d,i)
+                {
+                  if(i < 1){return 0;}
+                  else{return 2;}
+                });
+
+        line.transition()
+              .attr("x1", function(d,i)
+                {
+                  if(i < 1){return 0;}
+                    //else if(i == 1){return line[0][i].x1.baseVal.valueInSpecifiedUnits;}
+                    //else if(i == 1){return circle[0][i-1].cx.baseVal.valueInSpecifiedUnits;}
+                  //else if(i == 1){return ($("svg").width() / data.length) * (i-1) + (($("svg").width() / data.length) / 2);}
+                    //else{return line[0][i-1].x2.baseVal.valueInSpecifiedUnits;}
+                  else{return ($("svg").width() / data.length) * (i-1) + (($("svg").width() / data.length) / 2);}
+
+                })
+              .attr("y1", function(d,i)
+                {
+                  if(i < 1){return 0;}
+                    //else if(i == 1){return line[0][i].y1.baseVal.valueInSpecifiedUnits;}
+                    //else if(i == 1){return circle[0][i-1].cy.baseVal.valueInSpecifiedUnits;}
+                  //else if(i == 1){return data[i-1];}
+                    //else{return line[0][i-1].y2.baseVal.valueInSpecifiedUnits;}
+                  else{return data[i-1];}
+
+                })
+              .attr("x2", function(d,i)
+                {
+                  if(i < 1){return 0;}
+                  else
+                    {
+                      return ($("svg").width() / data.length) * i + (($("svg").width() / data.length) / 2);
+                    }
+                })
+              .attr("y2", function(d,i)
+                {
+                  if(i < 1){return 0;}
+                  else{return d;}
+                });
+
+*/
+
+  }
 
 
 
             var controller = new Controller(testData);
             //update(controller.getData(3, $("svg").width(), $("svg").height()));
             var i = 0;
+            if(i > 4) i = 0;
             setInterval(function(){
               controller.addData([{"Temperature":0.00, "Pressure":50.00, "Humidity":i*10}]);
-              update(controller.getData(3, $("svg").width(), $("svg").height()));
+              update(controller.Data(1,3, $("svg").width(), $("svg").height()));
               i++;}
               , 2000);
 
