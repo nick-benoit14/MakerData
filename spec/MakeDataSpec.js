@@ -51,7 +51,7 @@ describe("Controller", function(){
           });
       });
 
-      describe("clears data from buffer, formats data, draws data - updateDataset()", function()
+      describe("Clears data from buffer, formats data, draws data - updatepointArr()", function()
         {
 
           beforeEach(function()
@@ -71,15 +71,85 @@ describe("Controller", function(){
               expect(c.Data.max).toEqual(120); //test max and min - initally sets max and min with first call to updateRawData()
               expect(c.Data.min).toEqual(-10);        //then max and min are stored in newMin and newMax to be utlized in Draw
             });
-          it("calculates formatted x and y for current graph state - returns pointArr", function()
-            {
-              //TODO test updatePointArray()
-            });
+
+            it("calculates formatted x and y for current graph state returns pointArr - updatePointArray()", function()
+              {
+                c.clearData();
+
+                var data1 = [1,1,1,1,1];
+                var data2 = [1,2,3,4,5];
+                var data3 = [4,5,6,7,8];
+                var data4 = [-3,-3,-9,-5,-9];
+
+                c.addData(data1);
+                c.updateRawData();
+                c.updatePointArray();
+
+                c.addData([1]);
+                c.updateRawData();
+                c.updatePointArray();
+                expect(c.Data.pointArray[c.Data.pointArray.length - 1].Y).toEqual(c.Data.pointArray[0].Y); //expect added point of equal value to have same height
+                expect(c.Data.pointArray[c.Data.pointArray.length - 1].X).toBeGreaterThan(c.Data.displayHeight);//expect first point off screen
+
+                c.clearData();
+
+                c.addData(data2);
+                c.updateRawData();
+                c.updatePointArray();
+
+
+                c.addData(data3);
+                c.updateRawData();
+                c.updatePointArray();
+
+
+               expect(c.Data.pointArray[3].Y).toEqual(c.Data.pointArray[5].Y); //expect point with same value to have same y value. Testing array of not constant value
+
+               c.addData(data4);
+               c.updateRawData();
+               c.updatePointArray();
+               expect(c.Data.pointArray[c.Data.pointArray.length - 1].Y).toBeLessThan(c.Data.pointArray[0].Y); //expect min val to be min val
+              });
+
+
+
         });
 
 
 
-          describe("utilizes private methods",function()
+        describe("Moves new data into view, resizes lists, calculates max and min - draw()", function()
+          {
+
+            beforeEach(function()
+              {
+                var data = [1,-2,5,7,8,2,4,0,-2,6,2,-9,5,100,-3];
+                c.addData(data);
+                c.updateRawData();
+                c.updatePointArray();
+              });
+
+            it("cleans up rangeList - manageRangeList()", function()
+              {
+                //remove clippings
+                //make sure they are actually gone
+                //check rangeList orderedList
+
+                var clippings = [1];
+                var flag = c.manageRangeList(clippings);
+                console.log(c.Data.rangeList);
+                console.log(flag);
+
+              });
+            it("removes off screen values pointArr and rawData", function(){});
+            it("moves new data points on screen", function(){});
+            it("scales for new range if necessary", function(){});
+
+
+          });
+
+
+
+          describe("Utilizes private methods",function()
             {
                 it("utilizes binaryInsert - binaryInsert(arr, val, a, b)", function()
                   {

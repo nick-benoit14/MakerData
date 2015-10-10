@@ -5,9 +5,9 @@
 
 //---------------------TODO
       //Build Tests - MakeDataSpec.js
-          //test updateDataset()
-          //test manageUpdates()
+            //Test Draw()
           //test manageRangeList()
+          //test manageUpdates()
 
 
           //range changed flag? if update new Max and new Min if no change to range
@@ -35,7 +35,7 @@ function Controller(displayNum, height, width) //takes number of data points to 
       var tolerance = 100; //margin on sides of viewing window
       height -= tolerance;
       width -= tolerance;
-    
+
 
       this.Data =
         {
@@ -64,7 +64,6 @@ function Controller(displayNum, height, width) //takes number of data points to 
                 this.Data.dataBuffer.push(data[i]);
               }
           }
-
 
           //moves data from dataBuffer to rawData, sorts data
           //draws data formatted for last graph state
@@ -161,7 +160,7 @@ function Controller(displayNum, height, width) //takes number of data points to 
             if(a == b) //final value
               {
                 var flag = false;
-                if(a == 0 || a == arr.length) flag = true; //if deleted from front or back of list return true
+                if(a == 0 || a == arr.length - 1) flag = true; //if deleted from front or back of list return true
                  if(arr[m] > val)arr.splice(m-1,1); //add to front of arr (arr[0])
                  else arr.splice(m,1); //add after arr[m]
                  return flag;
@@ -197,7 +196,7 @@ function Controller(displayNum, height, width) //takes number of data points to 
           var flag = false;
           for(var i = 0; i < clippings.length; i++)
             {
-                flag = this.binaryDelete(this.Data.pointArray, clippings[i].Y);
+                flag = this.binaryDelete(this.Data.rangeList, clippings[i], 0, this.Data.rangeList.length - 1);
                 //if deleted max or min reset max and min
             }
           return flag;
@@ -234,10 +233,10 @@ function Controller(displayNum, height, width) //takes number of data points to 
             if(this.Data.max == this.Data.min){range = 1;}
             else{range = this.Data.max - this.Data.min;}
 
-          for(var i = this.Data.pointArray.length, j = 0; j < this.Data.rawData.length; i++, j++)
+          for(var i = this.Data.pointArray.length; i < this.Data.rawData.length; i++)
             {
               val_X = ((this.Data.displayWidth / this.Data.displayNum) * i) + (this.Data.tolerance / 2);
-              val_Y =   ((this.Data.rawData[j] - this.Data.min) * this.Data.displayHeight / range)
+              val_Y =   ((this.Data.rawData[i] - this.Data.min) * this.Data.displayHeight / range)
               + this.Data.tolerance / 2;
               this.Data.pointArray.push({"X":val_X,"Y":val_Y});
             }
