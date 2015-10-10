@@ -1,7 +1,7 @@
 //---------------------current
       //working on draw();
-          //manageRangeList
-          //manageUpdates - resize pointArr & rawData
+          //manageRangeList - test
+          //manageUpdates - resize pointArr & rawData - fix and test
 
 //---------------------TODO
       //Build Tests - MakeDataSpec.js
@@ -154,19 +154,20 @@ function Controller(displayNum, height, width) //takes number of data points to 
         }
         this.binaryDelete = function(arr, val, a, b) //inserts val into ordered array
           {
+            var flag = false;
             if(b < 0) b = 0;
             var m = Math.floor((a + b) / 2);
 
             if(a == b) //final value
               {
-                var flag = false;
                 if(a == 0 || a == arr.length - 1) flag = true; //if deleted from front or back of list return true
                  if(arr[m] > val)arr.splice(m-1,1); //add to front of arr (arr[0])
                  else arr.splice(m,1); //add after arr[m]
                  return flag;
               }
-            if(arr[m] < val) this.binaryDelete(arr, val, m + 1, b);
-            else this.binaryDelete(arr, val, a, m);
+            if(arr[m] < val) return this.binaryDelete(arr, val, m + 1, b);
+            else return this.binaryDelete(arr, val, a, m);
+
           }
 
       this.updateRangeList = function(inY) //takes array of raw Y values. adds it to sorted rangeList, update max and min

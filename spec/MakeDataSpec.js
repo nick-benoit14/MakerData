@@ -134,10 +134,15 @@ describe("Controller", function(){
                 //make sure they are actually gone
                 //check rangeList orderedList
 
-                var clippings = [1];
+                var clippings = [1,2,2];
                 var flag = c.manageRangeList(clippings);
-                console.log(c.Data.rangeList);
-                console.log(flag);
+                for(var i = 0; i < c.Data.rangeList.length; i++)
+                  {
+                    expect(c.Data.rangeList[i]).not.toEqual(1);
+                    expect(c.Data.rangeList[i]).not.toEqual(2);
+                  }
+                //console.log(c.Data.rangeList);
+                //console.log(flag);
 
               });
             it("removes off screen values pointArr and rawData", function(){});
@@ -164,6 +169,38 @@ describe("Controller", function(){
                         expect(orderedList[i] <= orderedList[i+1]).toBeTruthy();
                       }
                   });
+
+                  it("utilizes binaryDelete - binaryDelete(arr, val, a, b)", function()
+                    {
+                      var orderedList = [-1,0,1,2,3,4,5];
+
+
+                        var flag =  c.binaryDelete(orderedList,5,0,orderedList.length - 1); //remove max value- remove extreme should return true
+
+                        for(var i = 0; i < orderedList.length - 1; i++)
+                          {
+                            expect(orderedList[i]).not.toEqual(5);
+                          }
+                        expect(flag).toBeTruthy();
+
+
+                        flag =  c.binaryDelete(orderedList,-1,0,orderedList.length - 1); //remove min value - should return true
+                        for(var i = 0; i < orderedList.length - 1; i++)
+                          {
+                            expect(orderedList[i]).not.toEqual(-1);
+                          }
+                        expect(flag).toBeTruthy();
+
+
+                        flag =  c.binaryDelete(orderedList,3,0,orderedList.length - 1); //remove mid range value - should return false
+                        for(var i = 0; i < orderedList.length - 1; i++)
+                          {
+                            expect(orderedList[i]).not.toEqual(3);
+                          }
+                        expect(flag).not.toBeTruthy();
+
+
+                    });
 
                it("updates range list - updateRangeList(inY)", function()
                   {
