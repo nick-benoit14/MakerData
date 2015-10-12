@@ -138,14 +138,79 @@ describe("Controller", function(){
                 var flag = c.manageRangeList(clippings);
                 for(var i = 0; i < c.Data.rangeList.length; i++)
                   {
-                    expect(c.Data.rangeList[i]).not.toEqual(1);
+                    expect(c.Data.rangeList[i]).not.toEqual(1); //values removed
                     expect(c.Data.rangeList[i]).not.toEqual(2);
                   }
-                //console.log(c.Data.rangeList);
-                //console.log(flag);
+                for(var i = 0; i < c.Data.rangeList.length - 1;i++) //rangeList still be in order
+                  {expect(c.Data.rangeList[i] <= c.Data.rangeList[i+1]).toBeTruthy();}
 
+                   expect(flag).not.toBeTruthy(); //flag false
+
+                clippings = [100];
+                 flag = c.manageRangeList(clippings); //flag true, removed max
+                expect(flag).toBeTruthy();
+
+                clippings = [-9];
+                 flag = c.manageRangeList(clippings); //flat true removed min
+                expect(flag).toBeTruthy();
               });
-            it("removes off screen values pointArr and rawData", function(){});
+
+            it("removes off screen values pointArr and rawData - manageLists()", function()
+              {
+                  var flag =  c.manageLists();
+                  expect(flag).not.toBeTruthy();
+                  expect(c.Data.rawData.length).toBeLessThan(11);
+                  expect(c.Data.pointArray.length).toBeLessThan(11);
+
+                 var data = [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1];
+                  c.addData(data);
+                  c.updateDataset();
+                  flag = c.manageLists();
+                  expect(flag).toBeTruthy();
+
+
+                  data = [-3,-2,-1,0,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1];
+                  var data1 = [10,9,8,7,6,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1];
+                  var data2 = [1,2,3,4,5,6,7,8,9];
+
+                  c.clearData(); //remove min
+                  c.addData(data);
+                  c.updateDataset();
+                  flag = c.manageLists();
+                  expect(flag).toBeTruthy();
+
+                  c.clearData(); //remove min
+                  c.addData(data1);
+                  c.updateDataset();
+                  flag = c.manageLists();
+                  expect(flag).toBeTruthy();
+
+                  c.clearData(); //remove none - list not at capacity
+                  c.addData(data2);
+                  c.updateDataset();
+                  flag = c.manageLists();
+                  expect(flag).not.toBeTruthy();
+              });
+
+            it("updates things that need to be updated - updateState();", function()
+              {
+                  var data = [10000,1,3,4];
+                  var data1 = [-100000,2,3,-10];
+
+                  c.addData(data);
+                  c.updateDataset();
+                  var flag =  c.updateState(500,1000);
+                  expect(flag).toBeTruthy(); //added value outside of range
+
+                  c.clearData();
+                  c.addData([1,2,3,4]);
+                  c.updateDataset();
+                  c.addData([2,3]);
+                  c.updateDataset();
+                  flag = c.updateState(500,1000);
+                  expect(flag).not.toBeTruthy(); //added value within current range
+              });
+
             it("moves new data points on screen", function(){});
             it("scales for new range if necessary", function(){});
 
