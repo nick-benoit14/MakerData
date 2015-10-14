@@ -51,7 +51,7 @@ describe("Controller", function(){
           });
       });
 
-      describe("Clears data from buffer, formats data, draws data - updatepointArr()", function()
+      describe("Clears data from buffer, formats data, draws data - updatePointArray()", function()
         {
 
           beforeEach(function()
@@ -124,8 +124,7 @@ describe("Controller", function(){
               {
                 var data = [1,-2,5,7,8,2,4,0,-2,6,2,-9,5,100,-3];
                 c.addData(data);
-                c.updateRawData();
-                c.updatePointArray();
+                c.updateDataset();
               });
 
             it("cleans up rangeList - manageRangeList()", function()
@@ -179,17 +178,35 @@ describe("Controller", function(){
                   flag = c.manageLists();
                   expect(flag).toBeTruthy();
 
+                  expect(c.Data.rawData.length).toBeLessThan(11);
+                  expect(c.Data.pointArray.length).toBeLessThan(11);
+
                   c.clearData(); //remove min
                   c.addData(data1);
                   c.updateDataset();
                   flag = c.manageLists();
                   expect(flag).toBeTruthy();
 
+                  expect(c.Data.rawData.length).toBeLessThan(11);
+                  expect(c.Data.pointArray.length).toBeLessThan(11);
+
                   c.clearData(); //remove none - list not at capacity
                   c.addData(data2);
                   c.updateDataset();
                   flag = c.manageLists();
                   expect(flag).not.toBeTruthy();
+
+                  expect(c.Data.rawData.length).toBeLessThan(11);
+                  expect(c.Data.pointArray.length).toBeLessThan(11);
+
+                  c.addData(data);
+                  c.addData(data1);
+                  c.updateDataset();
+                  flag = c.manageLists();
+
+                  expect(c.Data.rawData.length).toBeLessThan(11);
+                  expect(c.Data.pointArray.length).toBeLessThan(11);
+
               });
 
             it("updates things that need to be updated - updateState();", function()
@@ -209,10 +226,40 @@ describe("Controller", function(){
                   c.updateDataset();
                   flag = c.updateState(500,1000);
                   expect(flag).not.toBeTruthy(); //added value within current range
+
+                  expect(c.Data.displayWidth).toEqual(1000 - c.Data.tolerance);
+                  expect(c.Data.displayHeight).toEqual(500 - c.Data.tolerance);
               });
 
-            it("moves new data points on screen", function(){});
-            it("scales for new range if necessary", function(){});
+
+            it("moves new data points on screen - redrawPoints(flag)", function()
+              {
+
+                c.Draw(500,1000); //move points to final position
+                var oldMinY = c.Data.pointArray[6];
+                var oldMaxY = c.Data.pointArray[8];
+
+
+                expect(oldMinY.Y).toEqual(c.Data.tolerance / 2);
+                expect(oldMaxY.Y).toEqual(c.Data.displayHeight + c.Data.tolerance / 2);
+
+
+                var data = [1000,-1000];
+                c.addData(data);
+                c.updateDataset();
+                c.Draw(500,1000);
+
+
+                var newMaxY = c.Data.pointArray[c.Data.pointArray.length - 2];
+                var newMinY = c.Data.pointArray[c.Data.pointArray.length - 1];
+
+                expect(newMaxY.Y).toEqual(oldMaxY.Y); //maximums drawn at maximims of viewport
+                expect(newMinY.Y).toEqual(oldMinY.Y);
+
+                expect(c.Data.pointArray.length).toBeLessThan(11); //lists correctly resized
+                expect(c.Data.rawData.length).toBeLessThan(11);
+
+              });
 
 
           });

@@ -1,11 +1,11 @@
 //---------------------current
       //working on draw();
-        //redraw points - this.redrawPoints(flagY);
+
 
 //---------------------TODO
       //Build Tests - MakeDataSpec.js
             //Test Draw()
-            //Test redrawPoints()
+            //optimize draw. dont recalculate y when not necessary
 
           //range changed flag? if update new Max and new Min if no change to range
           //if range = 0; plot straight line
@@ -71,7 +71,7 @@ function Controller(displayNum, height, width) //takes number of data points to 
             return this.Data.pointArray; //use with d3.update(); draw off screen
           }
 
-      this.Draw = function()
+      this.Draw = function(height, width)
         {
           //recalcules x
           //recalculates y if necessary
@@ -81,30 +81,17 @@ function Controller(displayNum, height, width) //takes number of data points to 
 
           var redrawRangeflag = false;
 
-          if(!redrawRangeFlag) redrawRangeflag = this.updateState(); //updates viewPort - returns true if max/min or viewport change
-          if(!redrawRangeFlag) redrawRangeflag = this.manageLists(); //returns true if max or min changed -
+//wont updateState or manageList if flag is not false
+        //FIX!!!  //if(!redrawRangeflag) redrawRangeflag = this.updateState(height, width); //updates viewPort - returns true if max/min or viewport change
+          //if(!redrawRangeflag) redrawRangeflag = this.manageLists(); //returns true if max or min changed -
 
+          this.updateState(height, width);
+          this.manageLists();
+
+          return this.redrawPoints();
 
               //need to redraw x values
               //may need to redraw y values
-/*  this.redrawPoints(bool);
-
-if(this.Data.pointArray.length < this.Data.displayNum){return this.Data.pointArr;} //Might neeed to redraw Y
-
-              for(var i = 0; i < this.Data.pointArr.length; i++) //recalculate values
-                  {
-                    if(redrawRangeflag)
-                      {
-                        //this.Data.pointArr[i].Y =
-                      }
-
-                     //this.Data.pointArr[i].X =
-
-                  }
-*/
-          //  }
-
-          //return pointArr
 
         }
           //handles things that need to happen often
@@ -250,12 +237,10 @@ if(this.Data.pointArray.length < this.Data.displayNum){return this.Data.pointArr
       this.redrawPoints = function(flagY)
         {
 
-          console.log(this.Data.pointArray);
-          if(flagY) //redraw x and y
-            {
-
-            }
-          else{} //redraw y
+          //console.log(this.Data.pointArray);
+          this.Data.pointArray = []; //clear point array
+          return this.updatePointArray(); //redraw points for new max and min (must be called after manageLists and updateState)
+           //return this.Data.pointArray;
         }
 
     this.updateState = function(height, width)
@@ -284,12 +269,13 @@ if(this.Data.pointArray.length < this.Data.displayNum){return this.Data.pointArr
       {
         var data = [1,2,3,4,5];
         this.addData(data);
-
         this.updateDataset();
-        this.redrawPoints();
+        console.log( this.Data.pointArray);
 
-        //this.addData(data);
-        //this.updateRawData();
-        //this.updatePointArray();
+        data = [100,4,2,-100];
+        this.addData(data);
+        this.updateDataset();
+        this.Draw(this.Data.displayHeight + this.Data.tolerance, this.Data.displayWidth + this.Data.tolerance);
+      
       }
 }
