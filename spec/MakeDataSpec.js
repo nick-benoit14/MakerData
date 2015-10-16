@@ -111,7 +111,10 @@ describe("Controller", function(){
                expect(c.Data.pointArray[c.Data.pointArray.length - 1].Y).toBeLessThan(c.Data.pointArray[0].Y); //expect min val to be min val
               });
 
+        it("Updates Dataset - updateDataset();", function()
+          {
 
+          });
 
         });
 
@@ -261,7 +264,13 @@ describe("Controller", function(){
 
               });
 
-
+          it("Draws to Screen- Draw();", function()
+            {
+              c.Draw();
+              expect(c.Data.pointArray.length).toBeLessThan(11);
+              expect(c.Data.rawData.length).toBeLessThan(11);
+              expect(c.Data.pointArray.length).toEqual(c.Data.rawData.length);
+            });
           });
 
 

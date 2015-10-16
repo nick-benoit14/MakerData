@@ -4,10 +4,9 @@
 
 //---------------------TODO
       //Build Tests - MakeDataSpec.js
-            //Test Draw()
             //optimize draw. dont recalculate y when not necessary
+            //build tests updateDataset();
 
-          //range changed flag? if update new Max and new Min if no change to range
           //if range = 0; plot straight line
 //---------------------updates
      //take displayNum as argument to controller
@@ -80,10 +79,13 @@ function Controller(displayNum, height, width) //takes number of data points to 
           //manages rangeList
 
           var redrawRangeflag = false;
+          var tmpFlag = false;
 
-//wont updateState or manageList if flag is not false
-        //FIX!!!  //if(!redrawRangeflag) redrawRangeflag = this.updateState(height, width); //updates viewPort - returns true if max/min or viewport change
-          //if(!redrawRangeflag) redrawRangeflag = this.manageLists(); //returns true if max or min changed -
+          tmpFlag = this.updateState(height, width); //updates viewPort - returns true if max/min or viewport change
+          if(!redrawRangeflag) redrawRangeflag = tmpFlag;
+
+          tmpFlag = this.manageLists(); //returns true if max or min changed -
+          if(!redrawRangeflag) redrawRangeflag = tmpFlag;
 
           this.updateState(height, width);
           this.manageLists();
@@ -276,6 +278,6 @@ function Controller(displayNum, height, width) //takes number of data points to 
         this.addData(data);
         this.updateDataset();
         this.Draw(this.Data.displayHeight + this.Data.tolerance, this.Data.displayWidth + this.Data.tolerance);
-      
+
       }
 }
