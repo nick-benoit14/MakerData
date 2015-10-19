@@ -108,7 +108,7 @@ describe("Controller", function(){
                c.addData(data4);
                c.updateRawData();
                c.updatePointArray();
-               expect(c.Data.pointArray[c.Data.pointArray.length - 1].Y).toBeLessThan(c.Data.pointArray[0].Y); //expect min val to be min val
+               expect(c.Data.pointArray[c.Data.pointArray.length - 1].Y).toBeGreaterThan(c.Data.pointArray[0].Y); //expect min val to be min val
               });
 
         it("Updates Dataset - updateDataset();", function()
@@ -243,8 +243,8 @@ describe("Controller", function(){
                 var oldMaxY = c.Data.pointArray[8];
 
 
-                expect(oldMinY.Y).toEqual(c.Data.tolerance / 2);
-                expect(oldMaxY.Y).toEqual(c.Data.displayHeight + c.Data.tolerance / 2);
+                expect(oldMaxY.Y).toEqual(c.Data.tolerance / 2);
+                expect(oldMinY.Y).toEqual(c.Data.displayHeight + c.Data.tolerance / 2);
 
 
                 var data = [1000,-1000];

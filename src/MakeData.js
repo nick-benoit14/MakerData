@@ -218,8 +218,9 @@ function Controller(displayNum, height, width) //takes number of data points to 
           for(var i = this.Data.pointArray.length; i < this.Data.rawData.length; i++)
             {
               val_X = ((this.Data.displayWidth / this.Data.displayNum) * i) + (this.Data.tolerance / 2);
-              val_Y =   ((this.Data.rawData[i] - this.Data.min) * this.Data.displayHeight / range)
-              + this.Data.tolerance / 2;
+              //val_Y =   ((this.Data.rawData[i] - this.Data.min) * this.Data.displayHeight / range) + this.Data.tolerance / 2;
+              val_Y =   ((this.Data.max - this.Data.rawData[i]) * this.Data.displayHeight / range) + this.Data.tolerance / 2;
+
               this.Data.pointArray.push({"X":val_X,"Y":val_Y});
             }
           return this.Data.pointArray;
