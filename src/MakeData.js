@@ -26,7 +26,7 @@
 */
 
 
-function Controller(displayNum, height, width) //takes number of data points to be displayed as argument
+function Controller(displayNum, height, width, orientation) //takes number of data points to be displayed as argument
     {
       var tolerance = 100; //margin on sides of viewing window
       height -= tolerance;
@@ -39,6 +39,7 @@ function Controller(displayNum, height, width) //takes number of data points to 
           "displayHeight":height, //height of viewing window upon creation
           "displayWidth":width, //width of viewing window upon creation
           "tolerance":tolerance, //margin of viewing window
+          "orientation":orientation, //Inverted or non-inverted data
 
           "rawData":[], //holds unformatted data - INDEXED CHRONOLOGICALLY
           "dataBuffer":[], //holds new data until added to rawData with updateDataset()
@@ -169,8 +170,10 @@ function Controller(displayNum, height, width) //takes number of data points to 
             if(max > this.Data.max || typeof this.Data.max == 'undefined') this.Data.newMax = max; //set new max and min if changes
             if(min < this.Data.min || typeof this.Data.min == 'undefined') this.Data.newMin = min;
 
-            if(typeof this.Data.max == 'undefined') this.Data.max = max; //initialize if uninitialized
+            if(typeof this.Data.max == 'undefined') this.Data.max = max; //initialize if uninitialized - otherwise will be updated in Draw
             if(typeof this.Data.min == 'undefined') this.Data.min = min;
+
+            return{"Max":max, "Min":min};
         }
 
       this.manageRangeList = function(clippings)
@@ -198,7 +201,7 @@ function Controller(displayNum, height, width) //takes number of data points to 
 
             this.Data.dataBuffer = []; //resets databuffer
             this.updateRangeList(raw_Y); //updates max and min
-
+            return raw_Y;
         }
       this.updatePointArray = function()//draws data in rawData formatted for last graph
         {                                //state - add off screen to the right to make
@@ -219,7 +222,7 @@ function Controller(displayNum, height, width) //takes number of data points to 
             {
               val_X = ((this.Data.displayWidth / this.Data.displayNum) * i) + (this.Data.tolerance / 2);
               //val_Y =   ((this.Data.rawData[i] - this.Data.min) * this.Data.displayHeight / range) + this.Data.tolerance / 2;
-              val_Y =   ((this.Data.max - this.Data.rawData[i]) * this.Data.displayHeight / range) + this.Data.tolerance / 2;
+              //val_Y =   ((this.Data.max - this.Data.rawData[i]) * this.Data.displayHeight / range) + this.Data.tolerance / 2;
 
               this.Data.pointArray.push({"X":val_X,"Y":val_Y});
             }
