@@ -18,5 +18,7 @@ Updates -
 
 Current
   writing specInvert.html - writing whole seperate spec sheet for inverted values
-    finished updateRawData
-    start on updatePointArray
+    testing Draw()
+    working on ManageRangeList()
+      then manageList()
+      then redrawPoints()

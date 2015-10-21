@@ -26,19 +26,19 @@
 */
 
 
-function Controller(displayNum, height, width, orientation) //takes number of data points to be displayed as argument
+function Controller(displayNum, height, width, orientation, tolerance) //takes number of data points to be displayed as argument
     {
-      var tolerance = 100; //margin on sides of viewing window
-      height -= tolerance;
-      width -= tolerance;
+      var inTolerance = tolerance; //margin on sides of viewing window
+      var inHeight = height - inTolerance;
+      var inWidth = width - inTolerance;
 
 
       this.Data =
         {
           "displayNum":displayNum, //number of points to be graphed
-          "displayHeight":height, //height of viewing window upon creation
-          "displayWidth":width, //width of viewing window upon creation
-          "tolerance":tolerance, //margin of viewing window
+          "displayHeight":inHeight, //height of viewing window upon creation
+          "displayWidth":inWidth, //width of viewing window upon creation
+          "tolerance":inTolerance, //margin of viewing window
           "orientation":orientation, //Inverted or non-inverted data
 
           "rawData":[], //holds unformatted data - INDEXED CHRONOLOGICALLY
@@ -220,10 +220,9 @@ function Controller(displayNum, height, width, orientation) //takes number of da
 
           for(var i = this.Data.pointArray.length; i < this.Data.rawData.length; i++)
             {
-              val_X = ((this.Data.displayWidth / this.Data.displayNum) * i) + (this.Data.tolerance / 2);
-              //val_Y =   ((this.Data.rawData[i] - this.Data.min) * this.Data.displayHeight / range) + this.Data.tolerance / 2;
-              //val_Y =   ((this.Data.max - this.Data.rawData[i]) * this.Data.displayHeight / range) + this.Data.tolerance / 2;
-
+              val_X = ((this.Data.displayWidth / (this.Data.displayNum - 1)) * i) + (this.Data.tolerance / 2);
+              if(orientation) val_Y =   ((this.Data.rawData[i] - this.Data.min) * this.Data.displayHeight / range) + this.Data.tolerance / 2;
+              else val_Y =   ((this.Data.max - this.Data.rawData[i]) * this.Data.displayHeight / range) + this.Data.tolerance / 2;
               this.Data.pointArray.push({"X":val_X,"Y":val_Y});
             }
           return this.Data.pointArray;
