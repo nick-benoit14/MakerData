@@ -181,8 +181,8 @@ function Controller(displayNum, height, width, orientation, tolerance) //takes n
           var flag = false;
           for(var i = 0; i < clippings.length; i++)
             {
-                flag = this.binaryDelete(this.Data.rangeList, clippings[i], 0, this.Data.rangeList.length - 1);
-                //if deleted max or min reset max and min
+                var temp  = this.binaryDelete(this.Data.rangeList, clippings[i], 0, this.Data.rangeList.length - 1);
+                if(!flag) flag = temp;//if deleted max or min reset max and min
             }
           return flag;
         }
@@ -235,7 +235,6 @@ function Controller(displayNum, height, width, orientation, tolerance) //takes n
         this.Data.pointArray.splice(0,clip); //resize pointArray
         var clippings = this.Data.rawData.splice(0,clip); //resize raw_Data
         rangeFlag = this.manageRangeList(clippings); //returns true if max or min changed - remove clipped values from rangelist
-
         return rangeFlag;
       }
 

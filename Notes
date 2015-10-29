@@ -13,12 +13,10 @@ Updates -
   added orientation flag to controller constructor
       true gives values max > min
       false gives values min > max - for svg coordinate plane (0 at top of viewport)
-
+10/27/15 - fixed flag in manageRangeList()
 
 
 Current
   writing specInvert.html - writing whole seperate spec sheet for inverted values
     testing Draw()
-    working on ManageRangeList()
-      then manageList()
       then redrawPoints()

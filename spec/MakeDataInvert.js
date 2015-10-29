@@ -81,18 +81,43 @@ describe("Controller - Standard Output", function(){
       });
     });
     describe("manageRangeList([]) - removes values from rangeList", function(){
-  /*    this.manageRangeList = function(clippings)
-        {
-          var flag = false;
-          for(var i = 0; i < clippings.length; i++)
-            {
-                flag = this.binaryDelete(this.Data.rangeList, clippings[i], 0, this.Data.rangeList.length - 1);
-                //if deleted max or min reset max and min
-            }
-          return flag;
-        }
-*/
-      it("removes all values from list");
+      it("removes all values from list", function(){
+        var data = [1,2,3,4,5,6,0,-10];
+        var clippings = [0];
+        c.updateRangeList(data);
+        c.manageRangeList(clippings);
+        for(var i = 0; i < c.Data.rangeList.length; i++) expect(c.Data.rangeList[i]).not.toEqual(0);
+        clippings = [-10];
+        c.manageRangeList(clippings);
+        for(var i = 0; i < c.Data.rangeList.length; i++) expect(c.Data.rangeList[i]).not.toEqual(-10);
+
+        clippings = [6];
+        c.manageRangeList(clippings);
+        for(var i = 0; i < c.Data.rangeList.length; i++) expect(c.Data.rangeList[i]).not.toEqual(6);
+
+        clippings = [1,2,3,4,5];
+        c.manageRangeList(clippings);
+        expect(c.Data.rangeList.length).toEqual(0);
+      });
+      it("returns correct flag", function(){
+        var data = [1,2,3,4,5,6,0,-10];
+        var clippings = [0];
+        c.updateRangeList(data);
+      var flag =  c.manageRangeList(clippings);
+        expect(flag).not.toBeTruthy();
+
+        clippings = [-10];
+        flag =  c.manageRangeList(clippings);
+        expect(flag).toBeTruthy();
+
+       clippings = [5];
+       flag =  c.manageRangeList(clippings);
+       expect(flag).not.toBeTruthy();
+
+       clippings = [6];
+       flag =  c.manageRangeList(clippings);
+       expect(flag).toBeTruthy();
+      });
     });
     describe("binaryInsert(arr, val, a, b)", function(){
       it("inserts values into ordered list", function(){
@@ -297,7 +322,7 @@ describe("Controller - Standard Output", function(){
   });
   describe("this.Draw(height, width)", function(){
     beforeEach(function(){
-      c.addData([-5,-4,-3,-2,-1,0,1,2,3,4]);
+      c.addData([-5,-4,-3,-2,-1,0,1,2,3,4]); //length 10
       c.updateDataset();
     });
     describe("updateState(height, width) - updatesControllerState", function(){
@@ -360,7 +385,46 @@ describe("Controller - Standard Output", function(){
         });
     });
     describe("manageLists() - resizes lists", function(){
-      //utilze manageRangList
+/*      this.manageLists = function()
+       {
+         var clip = this.Data.pointArray.length - this.Data.displayNum;
+
+         this.Data.pointArray.splice(0,clip); //resize pointArray
+         var clippings = this.Data.rawData.splice(0,clip); //resize raw_Data
+         rangeFlag = this.manageRangeList(clippings); //returns true if max or min changed - remove clipped values from rangelist
+
+         return rangeFlag;
+       }
+*/
+      it("removes correct values", function(){
+        c.manageLists();
+        expect(c.Data.pointArray.length).toEqual(10);
+
+        c.addData([0,1,2,3,4,5,6,7,8,9]);
+        c.updateDataset();
+        expect(c.Data.pointArray.length).toEqual(20);
+        c.manageLists();
+        expect(c.Data.pointArray.length).toEqual(10);
+
+        expect(c.Data.rawData[0]).toEqual(0); //removed entire first array
+        c.addData([7,8,9]);
+        c.updateDataset();
+        c.manageLists();
+        expect(c.Data.rawData[0]).toEqual(3); //removed entire first array
+      });
+      it("returns correct rangeflag", function(){
+
+        c.addData([5,1,2,3,4,5,6,7,8,9]);
+        c.updateDataset();
+
+        var flag = c.manageLists();
+        expect(flag).toBeTruthy();
+
+        c.addData([3]);
+        c.updateDataset();
+        flag = c.manageLists();
+        expect(flag).not.toBeTruthy();
+      });
     });
     describe("redrawPoints() - redraws points", function(){});
     describe("Draw(height, width) - calls function", function(){
