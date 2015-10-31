@@ -385,17 +385,6 @@ describe("Controller - Standard Output", function(){
         });
     });
     describe("manageLists() - resizes lists", function(){
-/*      this.manageLists = function()
-       {
-         var clip = this.Data.pointArray.length - this.Data.displayNum;
-
-         this.Data.pointArray.splice(0,clip); //resize pointArray
-         var clippings = this.Data.rawData.splice(0,clip); //resize raw_Data
-         rangeFlag = this.manageRangeList(clippings); //returns true if max or min changed - remove clipped values from rangelist
-
-         return rangeFlag;
-       }
-*/
       it("removes correct values", function(){
         c.manageLists();
         expect(c.Data.pointArray.length).toEqual(10);
@@ -425,48 +414,41 @@ describe("Controller - Standard Output", function(){
         flag = c.manageLists();
         expect(flag).not.toBeTruthy();
       });
+      it("sets min and max", function(){
+        expect(c.Data.min).toEqual(-5);
+        expect(c.Data.max).toEqual(4);
+
+        c.addData([10,0,0,0,0,0,0,0,0,0]);
+        c.updateDataset();
+        c.manageLists();
+        c.updateState(500,1000);
+
+        expect(c.Data.max).toEqual(10);
+        expect(c.Data.min).toEqual(0);
+      });
     });
-    describe("redrawPoints() - redraws points", function(){});
+    describe("redrawPoints() - redraws points", function(){
+      it("redraws points correctly", function(){
+        expect(c.Data.pointArray[0].Y).toEqual(500);
+        c.addData([4,5,6,7,8,9,10,11,12,13]); //length 10
+        c.updateDataset();
+        c.manageLists();
+        c.updateState(500,1000);
+        c.redrawPoints();
+        expect(c.Data.pointArray[0].Y).toEqual(500);
+
+        c.addData([1000,-1000]);
+        c.updateDataset();
+        c.manageLists();
+        c.updateState(500,1000);
+        c.redrawPoints();
+        expect(c.Data.pointArray[9].Y).toEqual(c.Data.displayHeight);
+        expect(c.Data.pointArray[8].Y).toEqual(0);
+      });
+    });
     describe("Draw(height, width) - calls function", function(){
-      //flag is valid
+
+    it("scales with viewport", function(){console.log(c.Draw(500,1000))});
     });
-
   });
-
-  /*this.Draw = function(height, width)
-    {
-      //recalcules x
-      //recalculates y if necessary
-      //resizes pointArray
-      //resizes raw_Data
-      //manages rangeList
-
-      var redrawRangeflag = false;
-      var tmpFlag = false;
-
-      tmpFlag = this.updateState(height, width); //updates viewPort - returns true if max/min or viewport change
-      if(!redrawRangeflag) redrawRangeflag = tmpFlag;
-
-      tmpFlag = this.manageLists(); //returns true if max or min changed -
-      if(!redrawRangeflag) redrawRangeflag = tmpFlag;
-
-      this.updateState(height, width);
-      this.manageLists();
-
-      return this.redrawPoints();
-
-          //need to redraw x values
-          //may need to redraw y values
-
-    }
-      //handles things that need to happen often
-                //updates dynamic variables
-                      //calculates x and y for newMax and newMin and then replaces
-                      //max and min with new values. newMax and NewMin set in updateRangeList
-                //recalculates points X & Y if necessary
-                //resizes PointArray to 10 after moving off unused dataPoints off screen
-                //resizes rawData as well
-*/
-
-
 });

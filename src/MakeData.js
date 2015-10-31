@@ -88,14 +88,10 @@ function Controller(displayNum, height, width, orientation, tolerance) //takes n
           tmpFlag = this.manageLists(); //returns true if max or min changed -
           if(!redrawRangeflag) redrawRangeflag = tmpFlag;
 
-          this.updateState(height, width);
           this.manageLists();
+          this.updateState(height, width);
 
           return this.redrawPoints();
-
-              //need to redraw x values
-              //may need to redraw y values
-
         }
           //handles things that need to happen often
                     //updates dynamic variables
@@ -179,11 +175,17 @@ function Controller(displayNum, height, width, orientation, tolerance) //takes n
       this.manageRangeList = function(clippings)
         {
           var flag = false;
+          var newMinFlag = false;
+          var newMaxFlag = false;
           for(var i = 0; i < clippings.length; i++)
             {
+                if(clippings[i] == this.Data.newMin) newMinFlag = true;
+                if(clippings[i] == this.Data.newMax) newMaxFlag = true;
                 var temp  = this.binaryDelete(this.Data.rangeList, clippings[i], 0, this.Data.rangeList.length - 1);
                 if(!flag) flag = temp;//if deleted max or min reset max and min
             }
+          if(newMinFlag) this.Data.newMin = this.Data.rangeList[0];  //reset newMin
+          if(newMaxFlag) this.Data.newMin = this.Data.rangeList[this.Data.rangeList.length - 1];  //reset newMax
           return flag;
         }
 
@@ -215,16 +217,16 @@ function Controller(displayNum, height, width, orientation, tolerance) //takes n
           var val_Y;
           var range;
 
-            if(this.Data.max == this.Data.min){range = 1;}
-            else{range = this.Data.max - this.Data.min;}
-
+          if(this.Data.max == this.Data.min){range = 1;}
+          else{range = this.Data.max - this.Data.min;}
           for(var i = this.Data.pointArray.length; i < this.Data.rawData.length; i++)
             {
-              val_X = ((this.Data.displayWidth / (this.Data.displayNum - 1)) * i) + (this.Data.tolerance / 2);
-              if(orientation) val_Y =   ((this.Data.rawData[i] - this.Data.min) * this.Data.displayHeight / range) + this.Data.tolerance / 2;
-              else val_Y =   ((this.Data.max - this.Data.rawData[i]) * this.Data.displayHeight / range) + this.Data.tolerance / 2;
+            val_X = this.interpolate(this.Data.displayWidth, this.Data.displayNum - 1, i) + (this.Data.tolerance / 2);
+            if(orientation) this.interpolate(this.Data.displayHeight, range, (this.Data.rawData[i] - this.Data.min)) + (this.Data.tolerance / 2);
+            else val_Y = this.interpolate(this.Data.displayHeight, range, (this.Data.max - this.Data.rawData[i])) + (this.Data.tolerance / 2);
               this.Data.pointArray.push({"X":val_X,"Y":val_Y});
             }
+
           return this.Data.pointArray;
         }
 
@@ -244,8 +246,7 @@ function Controller(displayNum, height, width, orientation, tolerance) //takes n
           //console.log(this.Data.pointArray);
           this.Data.pointArray = []; //clear point array
           return this.updatePointArray(); //redraw points for new max and min (must be called after manageLists and updateState)
-           //return this.Data.pointArray;
-        }
+      }
 
     this.updateState = function(height, width)
       {
@@ -268,6 +269,7 @@ function Controller(displayNum, height, width, orientation, tolerance) //takes n
 
           return flag;
       }
+    this.interpolate = function(available, range, i){return ((available / range) * i);}
 
     this.test = function()
       {
