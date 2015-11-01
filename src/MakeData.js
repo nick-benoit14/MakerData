@@ -1,29 +1,14 @@
 //---------------------current
-      //working on draw();
+    //fixed bug in changing to new max
 
 
 //---------------------TODO
-      //Build Tests - MakeDataSpec.js
-            //optimize draw. dont recalculate y when not necessary
-            //build tests updateDataset();
-
-          //if range = 0; plot straight line
+    //Lines continue off screen
+    
 //---------------------updates
      //take displayNum as argument to controller
      //added newMax and newMin. updated in updateRangeList min and max set to newMax and newMin in draw
 //---------------------Notes
-
-/*
-        this.addData() - Adds data to dataBuffer
-        this.updateDataset() - Flushes data buffer to raw_Data, updates rangeList max/min, draws all items off screen
-
-              //updateRawData()
-              //updatePointArray()
-              //return PointArray;
-
-
-        this.Draw() - shifts off screen obects into view and updates things that need to be updated
-*/
 
 
 function Controller(displayNum, height, width, orientation, tolerance) //takes number of data points to be displayed as argument
