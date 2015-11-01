@@ -185,7 +185,7 @@ function Controller(displayNum, height, width, orientation, tolerance) //takes n
                 if(!flag) flag = temp;//if deleted max or min reset max and min
             }
           if(newMinFlag) this.Data.newMin = this.Data.rangeList[0];  //reset newMin
-          if(newMaxFlag) this.Data.newMin = this.Data.rangeList[this.Data.rangeList.length - 1];  //reset newMax
+          if(newMaxFlag) this.Data.newMax = this.Data.rangeList[this.Data.rangeList.length - 1];  //reset newMax
           return flag;
         }
 
@@ -244,6 +244,8 @@ function Controller(displayNum, height, width, orientation, tolerance) //takes n
         {
 
           //console.log(this.Data.pointArray);
+          console.log(this.Data.max);
+          console.log(this.Data.min);
           this.Data.pointArray = []; //clear point array
           return this.updatePointArray(); //redraw points for new max and min (must be called after manageLists and updateState)
       }
@@ -271,17 +273,4 @@ function Controller(displayNum, height, width, orientation, tolerance) //takes n
       }
     this.interpolate = function(available, range, i){return ((available / range) * i);}
 
-    this.test = function()
-      {
-        var data = [1,2,3,4,5];
-        this.addData(data);
-        this.updateDataset();
-        console.log( this.Data.pointArray);
-
-        data = [100,4,2,-100];
-        this.addData(data);
-        this.updateDataset();
-        this.Draw(this.Data.displayHeight + this.Data.tolerance, this.Data.displayWidth + this.Data.tolerance);
-
-      }
 }
