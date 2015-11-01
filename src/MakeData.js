@@ -4,7 +4,7 @@
 
 //---------------------TODO
     //Lines continue off screen
-    
+
 //---------------------updates
      //take displayNum as argument to controller
      //added newMax and newMin. updated in updateRangeList min and max set to newMax and newMin in draw
@@ -16,6 +16,8 @@ function Controller(displayNum, height, width, orientation, tolerance) //takes n
       var inTolerance = tolerance; //margin on sides of viewing window
       var inHeight = height - inTolerance;
       var inWidth = width - inTolerance;
+
+
 
 
       this.Data =
@@ -36,6 +38,14 @@ function Controller(displayNum, height, width, orientation, tolerance) //takes n
           "newMax":undefined, //holds new max and min value for use in Draw to fit all data
           "newMin":undefined  //initialized in updateRangeList
         };
+
+      //Getter Methods
+      this.getData = function(){
+        console.log(this.Data.max);
+        return {'max':this.Data.max,
+                'min':this.Data.min};}
+
+
 
 
 
@@ -229,8 +239,6 @@ function Controller(displayNum, height, width, orientation, tolerance) //takes n
         {
 
           //console.log(this.Data.pointArray);
-          console.log(this.Data.max);
-          console.log(this.Data.min);
           this.Data.pointArray = []; //clear point array
           return this.updatePointArray(); //redraw points for new max and min (must be called after manageLists and updateState)
       }
