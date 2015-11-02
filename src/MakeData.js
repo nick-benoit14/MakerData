@@ -41,7 +41,6 @@ function Controller(displayNum, height, width, orientation, tolerance) //takes n
 
       //Getter Methods
       this.getData = function(){
-        console.log(this.Data.max);
         return {'max':this.Data.max,
                 'min':this.Data.min};}
 
@@ -238,7 +237,9 @@ function Controller(displayNum, height, width, orientation, tolerance) //takes n
       this.redrawPoints = function(flagY)
         {
 
-          //console.log(this.Data.pointArray);
+        //console.log(this.Data.pointArray);
+      //  console.log(this.Data.max);
+      //  console.log(this.Data.min);
           this.Data.pointArray = []; //clear point array
           return this.updatePointArray(); //redraw points for new max and min (must be called after manageLists and updateState)
       }
